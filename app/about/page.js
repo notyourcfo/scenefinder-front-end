@@ -31,7 +31,7 @@ export default function About() {
             </h1>
             <div className="mx-auto max-w-3xl rounded-lg border p-8">
               <p className="text-muted-foreground mb-4">
-                SceneFinder helps movie lovers and content creators instantly identify scenes from short clips or shared links. Whether it's a nostalgic line, an iconic moment, or a viral video you're curious about - we help you find out exactly where it came from. No need to scroll through episodes or forums. Just drop a clip and let our AI do the rest.
+                SceneFinder helps movie lovers and content creators instantly identify scenes from short clips or shared links. Whether its a nostalgic line, an iconic moment, or a viral video youre curious about - we help you find out exactly where it came from. No need to scroll through episodes or forums. Just drop a clip and let our AI do the rest.
               </p>
               <p className="text-muted-foreground">
                 Built by fans, for fans - we are focused on simplifying discovery through the power of machine learning and a love for storytelling.

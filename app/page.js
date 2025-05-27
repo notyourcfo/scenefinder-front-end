@@ -348,7 +348,7 @@ export default function Home() {
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="aspect-video rounded-md bg-muted flex items-center justify-center overflow-hidden">
                   <Image
-                    src="https://images.pexels.com/photos/32287514/pexels-photo-32287514.jpeg"
+                    src="/images/preview.jpg"
                     alt="Movie scene preview"
                     width={640}
                     height={360}
