@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Upload, LinkIcon, Film, RefreshCw, AlertCircle, Mail, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image"; // Added for Image component
 import { useRef, useState } from "react";
 
 export default function Home() {
@@ -223,7 +224,7 @@ export default function Home() {
 
       setWaitlistStatus({
         type: "success",
-        message: "Thank you! You've been added to our waitlist.",
+        message: "Thank you! You\'ve been added to our waitlist.", // Escaped quote
       });
       setEmail("");
     } catch (error) {
@@ -247,13 +248,13 @@ export default function Home() {
           </Link>
           <nav className="flex items-center gap-4">
             <Link href="/how-it-works" className="text-sm font-medium hover:text-primary">
-               workflow
+              Workflow
             </Link>
             <Link href="/about" className="text-sm font-medium hover:text-primary">
               About
             </Link>
             <Button size="sm">
-              <Link href="/login">login</Link>
+              <Link href="/login">Login</Link>
             </Button>
           </nav>
         </div>
@@ -318,7 +319,7 @@ export default function Home() {
                   onChange={(e) => setVideoLink(e.target.value)}
                   disabled={isProcessing}
                 />
-                <p className="text-xs text-muted-foreground">Currently supporting instagram only </p>
+                <p className="text-xs text-muted-foreground">Currently supporting Instagram only</p>
               </div>
               <Button onClick={handleLinkSubmit} disabled={isProcessing}>
                 {isProcessing ? (
@@ -345,12 +346,15 @@ export default function Home() {
             <div className="mt-8 rounded-lg border p-6">
               <h2 className="mb-4 text-xl font-semibold">Results</h2>
               <div className="grid gap-6 md:grid-cols-2">
-                <div className="aspect-video rounded-md bg-muted flex items-center justify-center">
-                 <img
-src="https://images.pexels.com/photos/32287514/pexels-photo-32287514.jpeg"
-    alt="Movie scene preview"
-    className="w-full h-full object-cover rounded-md"                     
-                    />
+                <div className="aspect-video rounded-md bg-muted flex items-center justify-center overflow-hidden">
+                  <Image
+                    src="https://images.pexels.com/photos/32287514/pexels-photo-32287514.jpeg"
+                    alt="Movie scene preview"
+                    width={640}
+                    height={360}
+                    className="w-full h-full object-cover rounded-md"
+                    priority
+                  />
                 </div>
                 <div className="space-y-4">
                   <div>
@@ -383,7 +387,6 @@ src="https://images.pexels.com/photos/32287514/pexels-photo-32287514.jpeg"
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
               Be the first to try new features and updates.
             </p>
-            
             <form onSubmit={handleWaitlistSubmit} className="mx-auto mt-6 max-w-sm flex gap-2">
               <div className="relative flex-1">
                 <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -395,13 +398,10 @@ src="https://images.pexels.com/photos/32287514/pexels-photo-32287514.jpeg"
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isSubmitting}
                 />
-                
               </div>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Submitting..." : "Join"}
-
               </Button>
-              
             </form>
             {waitlistStatus.message && (
               <div
@@ -418,9 +418,12 @@ src="https://images.pexels.com/photos/32287514/pexels-photo-32287514.jpeg"
               </div>
             )}
           </div>
-<div className="container mx-auto px-4 text-center">
-             <p className="text-xs text-muted-foreground">We will notify u when we launch. No spam, ever.</p>
-            </div>        </section>
+          <div className="container mx-auto px-4 text-center">
+            <p className="text-xs text-muted-foreground">
+              We will notify you when we launch. No spam, ever.
+            </p>
+          </div>
+        </section>
       </main>
       <footer className="w-full border-t py-6">
         <div className="container mx-auto flex flex-col items-center gap-4 md:flex-row md:justify-between">
