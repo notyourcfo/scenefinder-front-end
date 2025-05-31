@@ -1,242 +1,278 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Upload, LinkIcon, Film, RefreshCw, AlertCircle, Mail, CheckCircle } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image"; // Added for Image component
-import { useRef, useState } from "react";
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+import { Upload, LinkIcon, Film, RefreshCw, AlertCircle, Mail, CheckCircle } from "lucide-react"
+import Link from "next/link"
+import Image from "next/image"
+import { useRef, useState } from "react"
 
 export default function Home() {
-  const fileInputRef = useRef(null);
-  const [videoLink, setVideoLink] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [sceneDetails, setSceneDetails] = useState(null);
-  const [error, setError] = useState(null);
-  const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [waitlistStatus, setWaitlistStatus] = useState({ type: "", message: "" });
+  const fileInputRef = useRef(null)
+  const [videoLink, setVideoLink] = useState("")
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [sceneDetails, setSceneDetails] = useState(null)
+  const [error, setError] = useState(null)
+  const [email, setEmail] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [waitlistStatus, setWaitlistStatus] = useState({ type: "", message: "" })
 
+  // Trigger file input click
   const handleButtonClick = () => {
-    fileInputRef.current?.click();
-  };
+    fileInputRef.current?.click()
+  }
 
+  // Handle video/audio file upload
   const handleFileUpload = async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const file = event.target.files?.[0]
+    if (!file) return
 
     if (!file.type.startsWith("video/") && !file.type.startsWith("audio/")) {
-      setError("Error: Please upload a valid video or audio file (e.g., MP4, MP3)");
-      return;
+      setError("Error: Please upload a valid video or audio file (e.g., MP4, MP3)")
+      return
     }
-    const maxSize = 5 * 1024 * 1024; // Max 5MB
+    const maxSize = 5 * 1024 * 1024 // 5MB
     if (file.size > maxSize) {
-      setError("Error: File size exceeds 5MB limit");
-      return;
+      setError("Error: File size exceeds 5MB limit")
+      return
     }
 
-    // Validate duration for video files
+    // Validate video duration (<60s)
     if (file.type.startsWith("video/")) {
-      const video = document.createElement("video");
-      video.src = URL.createObjectURL(file);
+      const video = document.createElement("video")
+      video.src = URL.createObjectURL(file)
       try {
         await new Promise((resolve, reject) => {
           video.onloadedmetadata = () => {
             if (video.duration > 60) {
-              reject(new Error("Error: Video duration exceeds 60 seconds"));
+              reject(new Error("Error: Video duration exceeds 60 seconds"))
             } else {
-              resolve();
+              resolve()
             }
-          };
-          video.onerror = () => reject(new Error("Error: Invalid video file"));
-        });
+          }
+          video.onerror = () => reject(new Error("Error: Invalid video file"))
+        })
       } catch (error) {
-        setError(error.message);
-        return;
+        setError(error.message)
+        return
       }
     }
 
-    setError(null);
-    setSceneDetails(null);
-    setIsProcessing(true);
+    setError(null)
+    setSceneDetails(null)
+    setIsProcessing(true)
 
-    const formData = new FormData();
-    formData.append("video", file);
+    const formData = new FormData()
+    formData.append("video", file)
 
     try {
       const response = await fetch("https://scenefinder-upload-backend.onrender.com/api/upload", {
         method: "POST",
         body: formData,
-      });
+      })
       if (!response.ok) {
-        const text = await response.text();
-        console.error("Server response:", text);
-        throw new Error(`Server error: ${response.status} - ${text}`);
+        const text = await response.text()
+        console.error("Upload API error:", { status: response.status, body: text })
+        throw new Error(`Server error: ${response.status} - ${text}`)
       }
-      const result = await response.json();
-      console.log("Upload API response:", JSON.stringify(result, null, 2));
+      const result = await response.json()
+      console.log("Upload API response:", JSON.stringify(result, null, 2))
 
       // Handle both response structures
-      let data;
+      let data
       if (result.success && result.renderResponse?.success) {
-        data = result.renderResponse.data;
+        data = result.renderResponse.data
       } else if (result.success && result.data) {
-        data = result.data;
+        data = result.data
       } else {
-        throw new Error(`Invalid response format: ${JSON.stringify(result, null, 2)}`);
+        throw new Error(`Invalid response format: ${JSON.stringify(result, null, 2)}`)
       }
 
-      // Simplify season_and_episode logic
-      let seasonAndEpisode = "Unknown";
+      // Format season and episode
+      let seasonAndEpisode = "-"
       if (data.season_and_episode) {
-        seasonAndEpisode = data.season_and_episode;
+        seasonAndEpisode = data.season_and_episode
       } else if (data.season && data.episode) {
-        seasonAndEpisode = `Season ${data.season}, Episode ${data.episode}`;
+        seasonAndEpisode = `Season ${data.season}, Episode ${data.episode}`
+      } else if (data.season) {
+        seasonAndEpisode = `Season ${data.season}`
+      } else if (data.episode) {
+        seasonAndEpisode = `Episode ${data.episode}`
       }
 
       setSceneDetails({
-        movie_or_show: data.movie_or_series || data.title || "Unknown",
+        movie_or_show: data.movie_or_series || data.title || "-",
         season_and_episode: seasonAndEpisode,
-        timestamp: data.timestamp || "Unknown",
+        timestamp: data.timestamp || "-",
         characters: Array.isArray(data.character_names)
           ? data.character_names.join(", ")
           : typeof data.character_names === "string"
           ? data.character_names
-          : "Unknown",
-        scene_context:
-          data.scene_context || data.context_summary || data.context || "No context available",
-      });
+          : "-",
+        scene_context: data.scene_context || data.context_summary || data.context || "-",
+      })
     } catch (error) {
-      console.error("Upload error details:", error);
-      setError(`Error: ${error.message}`);
+      console.error("Upload error:", error)
+      setError(`Error: ${error.message}`)
     } finally {
-      setIsProcessing(false);
+      setIsProcessing(false)
     }
-  };
+  }
 
+  // Handle Instagram reel link submission via proxy
   const handleLinkSubmit = async () => {
     if (!videoLink.trim()) {
-      setError("Error: Please enter a valid video link");
-      return;
+      setError("Error: Please enter a valid Instagram reel link")
+      return
     }
 
-    setError(null);
-    setSceneDetails(null);
-    setIsProcessing(true);
+    setError(null)
+    setSceneDetails(null)
+    setIsProcessing(true)
+
+    // Use AbortController for timeout
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 120000) // 120s timeout
 
     try {
-      const response = await fetch(
-        "https://scenefinder-cloud-backend-1057564324403.us-central1.run.app/api/process-video",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url: videoLink }),
-        }
-      );
-      let result;
-      try {
-        result = await response.json();
-      } catch (jsonError) {
-        throw new Error("Failed to parse JSON response");
-      }
-      console.log("Link API response:", JSON.stringify(result, null, 2));
-      if (!response.ok) {
-        throw new Error(result.message || `Server error: ${response.status}`);
-      }
-      if (result.success && result.renderResponse?.success) {
-        const data = result.renderResponse.data;
-        // Simplify season_and_episode logic
-        let seasonAndEpisode = "-";
-        if (data.season_and_episode) {
-          seasonAndEpisode = data.season_and_episode;
-        } else if (data.season && data.episode) {
-          seasonAndEpisode = `Season ${data.season}, Episode ${data.episode}`;
-        }
+      const response = await fetch("/api/proxy-reel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reelUrl: videoLink }),
+        signal: controller.signal,
+      })
+      clearTimeout(timeoutId)
 
-        setSceneDetails({
-          movie_or_show: data.movie_or_series || data.title || "-",
-          season_and_episode: seasonAndEpisode,
-          timestamp: data.timestamp || "-",
-          characters: Array.isArray(data.characters)
+      if (!response.ok) {
+        const data = await response.json()
+        console.error("Proxy API error:", {
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries(response.headers.entries()),
+          body: data,
+        })
+        if (response.status === 400) {
+          setError(`Error: ${data.error || "Invalid reel URL"}`)
+        } else if (response.status === 403 || response.status === 401) {
+          setError("Error: Unable to process reel due to server authentication or access issues")
+        } else if (response.status === 429) {
+          setError("Error: Too many requests, please try again later")
+        } else if (response.status >= 500) {
+          setError("Error: Server error, please try again later")
+        } else {
+          setError(`Error: Failed to process reel - ${data.error || response.status}`)
+        }
+        return
+      }
+
+      const result = await response.json()
+      console.log("Final API response:", JSON.stringify(result, null, 2))
+
+      // Handle both response structures
+      let data
+      if (result.success && result.renderResponse?.success) {
+        data = result.renderResponse.data
+      } else if (result.success && result.data) {
+        data = result.data
+      } else {
+        throw new Error(`Invalid response format: ${JSON.stringify(result, null, 2)}`)
+      }
+
+      // Format season and episode
+      let seasonAndEpisode = "-"
+      if (data.season_and_episode) {
+        seasonAndEpisode = data.season_and_episode
+      } else if (data.season && data.episode) {
+        seasonAndEpisode = `Season ${data.season}, Episode ${data.episode}`
+      } else if (data.season) {
+        seasonAndEpisode = `Season ${data.season}`
+      } else if (data.episode) {
+        seasonAndEpisode = `Episode ${data.episode}`
+      }
+
+      setSceneDetails({
+        movie_or_show: data.movie_or_series || data.title || "-",
+        season_and_episode: seasonAndEpisode,
+        timestamp: data.timestamp || "-",
+        characters: Array.isArray(data.character_names)
+          ? data.character_names.join(", ")
+          : Array.isArray(data.characters)
             ? data.characters.join(", ")
+            : typeof data.character_names === "string"
+            ? data.character_names
             : typeof data.characters === "string"
             ? data.characters
-            : data.character_names?.join(", ") || "-",
-          scene_context:
-            data.context_or_summary || data.context_summary || data.context || "-",
-        });
-      } else {
-        throw new Error(`Invalid response format: ${JSON.stringify(result, null, 2)}`);
-      }
+            : "-",
+        scene_context: data.scene_context || data.context_summary || data.context || "-",
+      })
     } catch (error) {
-      console.error("Link error details:", error);
-      setError(`Error: ${error.message}`);
+      clearTimeout(timeoutId)
+      console.error("Link error:", error)
+      if (error.name === "AbortError") {
+        setError("Error: Request timed out after 120 seconds")
+      } else {
+        setError(`Error: ${error.message}`)
+      }
     } finally {
-      setIsProcessing(false);
+      setIsProcessing(false)
     }
-  };
+  }
 
+  // Reset form
   const handleReset = () => {
-    setError(null);
-    setVideoLink("");
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
+    setError(null)
+    setVideoLink("")
+    if (fileInputRef.current) fileInputRef.current.value = ""
+  }
 
+  // Validate email
   const isValidEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  }
 
+  // Handle waitlist submission
   const handleWaitlistSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!email || !isValidEmail(email)) {
-      setWaitlistStatus({ type: "error", message: "Please enter a valid email address." });
-      return;
+      setWaitlistStatus({ type: "error", message: "Please enter a valid email address." })
+      return
     }
-    setIsSubmitting(true);
-    setWaitlistStatus({ type: "", message: "" });
+    setIsSubmitting(true)
+    setWaitlistStatus({ type: "", message: "" })
 
     try {
       const response = await fetch(
         "https://api.sheety.co/fb780d0da76b54458e03f37d384563ae/scenefinderWaitlist/sheet1",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            sheet1: {
-              email,
-            },
-          }),
-        },
-      );
-
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sheet1: { email } }),
+        }
+      )
       if (!response.ok) {
-        const text = await response.text();
-        console.error("Sheety API response:", text);
-        throw new Error(`Failed to add email to waitlist: ${text}`);
+        const text = await response.text()
+        console.error("Sheety API error:", text)
+        throw new Error(`Failed to add email to waitlist: ${text}`)
       }
-
-      const result = await response.json();
-      console.log("Sheety API success response:", JSON.stringify(result, null, 2));
-
+      const result = await response.json()
+      console.log("Sheety API response:", JSON.stringify(result, null, 2))
       setWaitlistStatus({
         type: "success",
-        message: "Thank you! You\'ve been added to our waitlist.", // Escaped quote
-      });
-      setEmail("");
+        message: "Thank you! You've been added to our waitlist.",
+      })
+      setEmail("")
     } catch (error) {
-      console.error("Waitlist submission error:", error);
+      console.error("Waitlist error:", error)
       setWaitlistStatus({
         type: "error",
         message: "Error adding your email. Please try again later.",
-      });
+      })
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -310,7 +346,7 @@ export default function Home() {
               <div className="grid gap-2">
                 <Label htmlFor="video-link" className="flex items-center gap-2">
                   <LinkIcon className="h-4 w-4" />
-                  Paste Video Link
+                  Paste Instagram Reel Link
                 </Label>
                 <Input
                   id="video-link"
@@ -441,5 +477,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  );
+  )
 }
