@@ -90,6 +90,10 @@ export default function Home() {
         throw new Error(`Invalid response format: ${JSON.stringify(result, null, 2)}`)
       }
 
+      // Add debug logs to trace data
+      console.log("Raw data received:", data);
+      console.log("Available fields:", Object.keys(data));
+
       // Format season and episode
       let seasonAndEpisode = "-"
       if (data.season_and_episode) {
@@ -108,10 +112,14 @@ export default function Home() {
         timestamp: data.timestamp || "-",
         characters: Array.isArray(data.character_names)
           ? data.character_names.join(", ")
-          : typeof data.character_names === "string"
-          ? data.character_names
-          : "-",
-        scene_context: data.scene_context || data.context_summary || data.context || "-",
+          : Array.isArray(data.characters)
+            ? data.characters.join(", ")
+            : typeof data.character_names === "string"
+            ? data.character_names
+            : typeof data.characters === "string"
+            ? data.characters
+            : "-",
+        scene_context: data.context_or_summary || data.context_summary || data.scene_context || data.context || "-",
       })
     } catch (error) {
       console.error("Upload error:", error)
@@ -180,6 +188,10 @@ export default function Home() {
         throw new Error(`Invalid response format: ${JSON.stringify(result, null, 2)}`)
       }
 
+      // Add debug logs to trace data
+      console.log("Raw data received:", data);
+      console.log("Available fields:", Object.keys(data));
+
       // Format season and episode
       let seasonAndEpisode = "-"
       if (data.season_and_episode) {
@@ -205,7 +217,7 @@ export default function Home() {
             : typeof data.characters === "string"
             ? data.characters
             : "-",
-        scene_context: data.scene_context || data.context_summary || data.context || "-",
+        scene_context: data.context_or_summary || data.context_summary || data.scene_context || data.context || "-",
       })
     } catch (error) {
       clearTimeout(timeoutId)
