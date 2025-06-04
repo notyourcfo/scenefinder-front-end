@@ -1,8 +1,8 @@
-# SceneFinder 🎬
+# SceneFinder 
 
 SceneFinder is a modern web application that helps users identify movies, TV shows, and specific scenes from video clips or Instagram reels. Built with Next.js and featuring a sleek UI powered by Tailwind CSS, it provides an intuitive way to discover the source of your favorite video content.
 
-## Features ✨
+## Features 
 
 - **Video Upload Analysis**: Upload video files (up to 5MB, max 60 seconds) for scene identification
 - **Instagram Reel Support**: Analyze scenes directly from Instagram reel links
@@ -15,7 +15,7 @@ SceneFinder is a modern web application that helps users identify movies, TV sho
 - **Waitlist System**: Join the waitlist for upcoming features
 - **Modern UI**: Beautiful and responsive design using Tailwind CSS and shadcn/ui components
 
-## Tech Stack 🛠️
+## Tech Stack 
 
 - **Frontend Framework**: Next.js 15.3.2
 - **UI Library**: React 19.0.0
@@ -30,7 +30,7 @@ SceneFinder is a modern web application that helps users identify movies, TV sho
   - PostCSS
   - Tailwind CSS configuration
 
-## Getting Started 🚀
+## Getting Started 
 
 1. **Clone the repository**
    ```bash
@@ -51,14 +51,14 @@ SceneFinder is a modern web application that helps users identify movies, TV sho
 4. **Open your browser**
    Navigate to `http://localhost:3000`
 
-## Scripts 📝
+## Scripts
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
 
-## Project Structure 📁
+## Project Structure 
 
 ```
 scenefinder/
