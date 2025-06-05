@@ -1,6 +1,7 @@
 # SceneFinder 
 
-SceneFinder is a modern web application that helps users identify movies, TV shows, and specific scenes from video clips or Instagram reels. Built with Next.js and featuring a sleek UI powered by Tailwind CSS, it provides an intuitive way to discover the source of your favorite video content.
+SceneFinder is a web application that helps users identify movies, TV shows, and specific scenes from video clips or Instagram reels. 
+Built with Next.js and UI powered by Tailwind CSS, it provides way to discover the source of your favorite video content.
 
 ## Features 
 
@@ -29,34 +30,6 @@ SceneFinder is a modern web application that helps users identify movies, TV sho
   - ESLint
   - PostCSS
   - Tailwind CSS configuration
-
-## Getting Started 
-
-1. **Clone the repository**
-   ```bash
-   git clone [your-repo-url]
-   cd scenefinder
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-4. **Open your browser**
-   Navigate to `http://localhost:3000`
-
-## Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
 
 ## Project Structure 
 
