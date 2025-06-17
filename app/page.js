@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { Upload, LinkIcon, Film, RefreshCw, AlertCircle, Mail, CheckCircle, Search } from "lucide-react"
+import { Upload, LinkIcon, Film, RefreshCw, AlertCircle, Mail, CheckCircle } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRef, useState } from "react"
@@ -133,13 +133,6 @@ export default function Home() {
   const handleLinkSubmit = async () => {
     if (!videoLink.trim()) {
       setError("Error: Please enter a valid Instagram reel link")
-      return
-    }
-
-    // Validate Instagram link
-    const instagramRegex = /^https?:\/\/(www\.)?instagram\.com\/(p|reel)\/[a-zA-Z0-9_-]+\/?.*$/;
-    if (!instagramRegex.test(videoLink)) {
-      setError("Error: Only Instagram reel links are supported")
       return
     }
 
@@ -294,200 +287,207 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
-      {/* Navigation Header */}
+    <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2 text-xl font-bold gradient-text">
+          <Link href="/" className="flex items-center gap-2 text-xl font-bold">
             <Film className="h-6 w-6" />
             SceneFinder
           </Link>
           <nav className="flex items-center gap-4">
-            <Link 
-              href="/how-it-works" 
-              className="text-sm font-medium hover:text-primary transition-colors"
-            >
+            <Link href="/how-it-works" className="text-sm font-medium hover:text-primary">
               Workflow
             </Link>
-            <Link 
-              href="/about" 
-              className="text-sm font-medium hover:text-primary transition-colors"
-            >
+            <Link href="/about" className="text-sm font-medium hover:text-primary">
               About
             </Link>
-            <Button size="sm" variant="outline" asChild>
+            <Button size="sm">
               <Link href="/login">Login</Link>
             </Button>
           </nav>
         </div>
       </header>
-
-      <main className="container mx-auto px-4 py-12 max-w-4xl">
-        {/* Hero Section */}
-        <div className="text-center mb-12 space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold gradient-text">
-            Find Any Movie or TV Scene
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Discover the source of your favorite movie and TV show scenes with just a video clip or Instagram reel
-          </p>
-        </div>
-
-        {/* Main Content */}
-        <div className="grid gap-8 md:grid-cols-2">
-          {/* Upload Section */}
-          <div className="bg-card rounded-xl p-6 shadow-lg border border-border/50 hover:border-primary/50 transition-all duration-300">
-            <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-              <Film className="w-6 h-6 text-primary" />
-              Upload Video
-            </h2>
-            <div className="space-y-4">
-              <Button
-                onClick={handleButtonClick}
-                className="w-full h-32 border-2 border-dashed border-primary/20 hover:border-primary/40 transition-all duration-300 bg-secondary/10 hover:bg-secondary/20"
-              >
-                <div className="flex flex-col items-center gap-2">
-                  <Upload className="w-8 h-8 text-primary" />
-                  <span className="text-sm text-muted-foreground">Click to upload or drag and drop</span>
-                  <span className="text-xs text-muted-foreground">MP4, MP3 up to 5MB</span>
-                </div>
-              </Button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileUpload}
-                accept="video/*,audio/*"
-                className="hidden"
-              />
-            </div>
+      <main className="flex-1">
+        <section className="w-full py-12 md:py-24">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+              Find Any Movie or TV Scene
+            </h1>
+            <p className="mx-auto mt-4 max-w-2xl text-muted-foreground md:text-xl">
+              Upload a clip or paste a link to identify the movie, show, or scene details instantly.
+            </p>
           </div>
-
-          {/* Link Section */}
-          <div className="bg-card rounded-xl p-6 shadow-lg border border-border/50 hover:border-primary/50 transition-all duration-300">
-            <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-              <LinkIcon className="w-6 h-6 text-primary" />
-              Instagram Reel
-            </h2>
-            <div className="space-y-4">
-              <div className="relative">
-                <Input
-                  type="text"
-                  placeholder="Paste Instagram reel link here"
-                  value={videoLink}
-                  onChange={(e) => setVideoLink(e.target.value)}
-                  className="pr-12"
-                />
-                <Button
-                  onClick={handleLinkSubmit}
-                  className="absolute right-1 top-1 h-8"
-                  disabled={isProcessing}
-                >
-                  <Search className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Results Section */}
-        {isProcessing && (
-          <div className="mt-8 text-center">
-            <div className="inline-block animate-spin">
-              <RefreshCw className="w-8 h-8 text-primary" />
-            </div>
-            <p className="mt-2 text-muted-foreground">Processing your request...</p>
-          </div>
-        )}
-
-        {error && (
-          <div className="mt-8 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-            <div className="flex items-center gap-2 text-destructive">
-              <AlertCircle className="w-5 h-5" />
-              <p>{error}</p>
-            </div>
-          </div>
-        )}
-
-        {sceneDetails && (
-          <div className="mt-8 bg-card rounded-xl p-6 shadow-lg border border-border/50 animate-in fade-in slide-in-from-bottom-4">
-            <h2 className="text-2xl font-semibold mb-4">Scene Details</h2>
+        </section>
+        <section className="container mx-auto max-w-5xl px-4 py-12">
+          <div className="grid gap-6 rounded-lg border p-6">
+            <h2 className="text-xl font-semibold">Find Your Scene</h2>
+            <p className="text-sm text-muted-foreground">
+              Upload a video or audio clip (max 60 seconds, 5MB) or paste a link from Instagram.
+            </p>
             <div className="grid gap-4">
               <div className="grid gap-2">
-                <Label className="text-muted-foreground">Movie/Show</Label>
-                <p className="text-lg font-medium">{sceneDetails.movie_or_show}</p>
+                <Label htmlFor="video-upload" className="flex items-center gap-2">
+                  <Upload className="h-4 w-4" />
+                  Upload Video or Audio Clip
+                </Label>
+                <div className="flex items-center justify-center rounded-md border-2 border-dashed p-8 hover:bg-muted/50">
+                  <div className="text-center space-y-2">
+                    <Film className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <p className="text-sm font-medium">Drag & drop your clip here</p>
+                    <p className="text-xs text-muted-foreground">MP4, MP3, max 60 seconds, 5MB</p>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleButtonClick}
+                      disabled={isProcessing}
+                    >
+                      Select File
+                    </Button>
+                    <input
+                      id="video-upload"
+                      type="file"
+                      accept="video/*,audio/*"
+                      ref={fileInputRef}
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                  </div>
+                </div>
               </div>
+              <Separator />
               <div className="grid gap-2">
-                <Label className="text-muted-foreground">Season & Episode</Label>
-                <p className="text-lg font-medium">{sceneDetails.season_and_episode}</p>
+                <Label htmlFor="video-link" className="flex items-center gap-2">
+                  <LinkIcon className="h-4 w-4" />
+                  Paste Instagram Reel Link
+                </Label>
+                <Input
+                  id="video-link"
+                  placeholder="https://instagram.com/reel..."
+                  value={videoLink}
+                  onChange={(e) => setVideoLink(e.target.value)}
+                  disabled={isProcessing}
+                />
+                <p className="text-xs text-muted-foreground">Currently supporting Instagram only</p>
               </div>
-              <div className="grid gap-2">
-                <Label className="text-muted-foreground">Timestamp</Label>
-                <p className="text-lg font-medium">{sceneDetails.timestamp}</p>
-              </div>
-              <div className="grid gap-2">
-                <Label className="text-muted-foreground">Characters</Label>
-                <p className="text-lg font-medium">{sceneDetails.characters}</p>
-              </div>
-              <div className="grid gap-2">
-                <Label className="text-muted-foreground">Scene Context</Label>
-                <p className="text-lg font-medium">{sceneDetails.scene_context}</p>
-              </div>
+              <Button onClick={handleLinkSubmit} disabled={isProcessing}>
+                {isProcessing ? (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  "Identify Scene"
+                )}
+              </Button>
+              {error && (
+                <div className="rounded-md bg-red-50 p-4 text-red-600">
+                  <p className="mb-2 font-medium">Error:</p>
+                  <p className="text-sm">{error}</p>
+                  <Button size="sm" variant="outline" onClick={handleReset} className="mt-3">
+                    Try Again
+                  </Button>
+                </div>
+              )}
             </div>
-            <Button
-              onClick={handleReset}
-              className="mt-6 w-full"
-              variant="outline"
-            >
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Start New Search
-            </Button>
           </div>
-        )}
-
-        {/* Waitlist Section */}
-        <div className="mt-12 bg-card rounded-xl p-6 shadow-lg border border-border/50">
-          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-            <Mail className="w-6 h-6 text-primary" />
-            Join the Waitlist
-          </h2>
-          <p className="text-muted-foreground mb-4">
-            Be the first to know about new features and updates
-          </p>
-          <div className="flex gap-4">
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="flex-1"
-            />
-            <Button
-              onClick={handleWaitlistSubmit}
-              disabled={isSubmitting || !isValidEmail(email)}
-            >
-              {isSubmitting ? (
-                <RefreshCw className="w-4 h-4 animate-spin" />
-              ) : (
-                "Join"
-              )}
-            </Button>
-          </div>
-          {waitlistStatus.message && (
-            <div className={`mt-4 p-3 rounded-lg flex items-center gap-2 ${
-              waitlistStatus.type === "success"
-                ? "bg-green-500/10 text-green-500"
-                : "bg-destructive/10 text-destructive"
-            }`}>
-              {waitlistStatus.type === "success" ? (
-                <CheckCircle className="w-5 h-5" />
-              ) : (
-                <AlertCircle className="w-5 h-5" />
-              )}
-              <p>{waitlistStatus.message}</p>
+          {sceneDetails && (
+            <div className="mt-8 rounded-lg border p-6">
+              <h2 className="mb-4 text-xl font-semibold">Results</h2>
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="aspect-video rounded-md bg-muted flex items-center justify-center overflow-hidden">
+                  <Image
+                    src="/images/preview.jpg"
+                    alt="Movie scene preview"
+                    width={640}
+                    height={360}
+                    className="w-full h-full object-cover rounded-md"
+                    priority
+                  />
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-medium">Scene Details</h3>
+                    <div className="grid grid-cols-[100px_1fr] gap-1 text-sm">
+                      <span className="font-medium">Movie/Show:</span>
+                      <span>{sceneDetails.movie_or_show || "-"}</span>
+                      <span className="font-medium">Season/Episode:</span>
+                      <span>{sceneDetails.season_and_episode || "-"}</span>
+                      <span className="font-medium">Timestamp:</span>
+                      <span>{sceneDetails.timestamp || "-"}</span>
+                      <span className="font-medium">Characters:</span>
+                      <span>{sceneDetails.characters || "-"}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium">Scene Context</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {sceneDetails.scene_context || "No context available"}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
-        </div>
+        </section>
+        <section className="w-full py-12 bg-muted">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-2xl font-bold tracking-tighter md:text-3xl">Join Our Waitlist</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+              Be the first to try new features and updates.
+            </p>
+            <form onSubmit={handleWaitlistSubmit} className="mx-auto mt-6 max-w-sm flex gap-2">
+              <div className="relative flex-1">
+                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  className="pl-9"
+                  placeholder="Enter your email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isSubmitting}
+                />
+              </div>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Join"}
+              </Button>
+            </form>
+            {waitlistStatus.message && (
+              <div
+                className={`mt-4 flex items-center justify-center gap-2 text-sm ${
+                  waitlistStatus.type === "error" ? "text-red-600" : "text-green-600"
+                }`}
+              >
+                {waitlistStatus.type === "error" ? (
+                  <AlertCircle className="h-4 w-4" />
+                ) : (
+                  <CheckCircle className="h-4 w-4" />
+                )}
+                <p>{waitlistStatus.message}</p>
+              </div>
+            )}
+          </div>
+          <div className="container mx-auto px-4 text-center">
+            <p className="text-xs text-muted-foreground">
+              We will notify you when we launch. No spam, ever.
+            </p>
+          </div>
+        </section>
       </main>
+      <footer className="w-full border-t py-6">
+        <div className="container mx-auto flex flex-col items-center gap-4 md:flex-row md:justify-between">
+          <p className="text-sm text-muted-foreground">
+            © {new Date().getFullYear()} SceneFinder. All rights reserved.
+          </p>
+          <div className="flex gap-4">
+            <Link href="#" className="text-sm text-muted-foreground hover:underline">
+              Privacy Policy
+            </Link>
+            <Link href="#" className="text-sm text-muted-foreground hover:underline">
+              Terms of Service
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
