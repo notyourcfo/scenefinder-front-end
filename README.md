@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# SceneFinder 🎬
 
-## Getting Started
+SceneFinder is a modern web application that helps users identify movies, TV shows, and specific scenes from video clips or Instagram reels. Built with Next.js and featuring a sleek UI powered by Tailwind CSS, it provides an intuitive way to discover the source of your favorite video content.
 
-First, run the development server:
+## Features ✨
 
+- **Video Upload Analysis**: Upload video files (up to 5MB, max 60 seconds) for scene identification
+- **Instagram Reel Support**: Analyze scenes directly from Instagram reel links
+- **Comprehensive Scene Details**: Get information about:
+  - Movie or TV Show title
+  - Season and Episode information (for TV shows)
+  - Timestamp of the scene
+  - Characters present in the scene
+  - Detailed scene context
+- **Waitlist System**: Join the waitlist for upcoming features
+- **Modern UI**: Beautiful and responsive design using Tailwind CSS and shadcn/ui components
+
+## Tech Stack 🛠️
+
+- **Frontend Framework**: Next.js 15.3.2
+- **UI Library**: React 19.0.0
+- **Styling**: 
+  - Tailwind CSS
+  - shadcn/ui components
+  - class-variance-authority
+  - tailwind-merge
+- **Icons**: Lucide React
+- **Development Tools**:
+  - ESLint
+  - PostCSS
+  - Tailwind CSS configuration
+
+## Getting Started 🚀
+
+1. **Clone the repository**
+   ```bash
+   git clone [your-repo-url]
+   cd scenefinder
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Run the development server**
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+   ```
+
+4. **Open your browser**
+   Navigate to `http://localhost:3000`
+
+## Scripts 📝
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+## Project Structure 📁
+
+```
+scenefinder/
+├── app/                # Next.js app directory
+│   ├── api/           # API routes
+│   ├── about/         # About page
+│   ├── how-it-works/  # How it works page
+│   └── login/         # Login page
+├── components/        # Reusable UI components
+├── lib/              # Utility functions and helpers
+├── public/           # Static assets
+└── ...config files   # Various configuration files
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Contributing 🤝
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## License 📄
 
-## Learn More
+[Your License Here]
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built with ❤️ using Next.js and Tailwind CSS

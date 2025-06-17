@@ -68,7 +68,7 @@ export default function Home() {
     formData.append("video", file)
 
     try {
-      const response = await fetch("https://scenefinder-upload-backend.onrender.com/api/upload", {
+      const response = await fetch("https://scenefinder-upload-backend.vercel.app/api/upload", {
         method: "POST",
         body: formData,
       })
